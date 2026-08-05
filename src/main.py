@@ -1,14 +1,7 @@
-from database import get_connection
+from employee import add_employee
 
 def main():
-    try:
-        conn = get_connection()
-        print("Connected to PostgreSQL successfully!")
-        conn.close()
-
-    except Exception as e:
-        print("Connection Failed!")
-        print(e)
+    add_employee()
 
 if __name__ == "__main__":
     main()
