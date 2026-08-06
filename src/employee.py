@@ -255,3 +255,60 @@ def update_employee():
 
         if "conn" in locals():
             conn.close()
+
+def delete_employee():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        employee_id = int(input("\nEnter Employee ID to delete: "))
+
+        # Check if employee exists
+        cur.execute(
+            """
+            SELECT
+                employee_id,
+                first_name,
+                last_name
+            FROM employees
+            WHERE employee_id = %s
+            """,
+            (employee_id,),
+        )
+
+        employee = cur.fetchone()
+
+        if employee is None:
+            print("\nEmployee not found.")
+            return
+
+        print("\nEmployee Found")
+        print("---------------------")
+        print(f"ID   : {employee[0]}")
+        print(f"Name : {employee[1]} {employee[2]}")
+        confirm = input("\nAre you sure? (y/n): ").strip().lower()
+        if confirm != "y":
+            print("\nDeletion cancelled.")
+            return
+        cur.execute(
+            """
+            DELETE FROM employees
+            WHERE employee_id = %s
+            """,
+            (employee_id,),
+        )
+        conn.commit()
+        print("\nEmployee deleted successfully!")
+
+    except Exception as e:
+        if "conn" in locals():
+            conn.rollback()
+
+        print("\nError:", e)
+
+    finally:
+        if "cur" in locals():
+            cur.close()
+
+        if "conn" in locals():
+            conn.close()
