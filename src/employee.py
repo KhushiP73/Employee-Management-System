@@ -173,3 +173,85 @@ def search_employee():
 
         if "conn" in locals():
             conn.close()
+
+def update_employee():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        employee_id = int(input("\nEnter Employee ID to update: "))
+
+        cur.execute(
+            """
+            SELECT
+                employee_id,
+                department_id,
+                first_name,
+                last_name,
+                email,
+                phone,
+                salary
+            FROM employees
+            WHERE employee_id = %s
+            """,
+            (employee_id,),
+        )
+
+        employee = cur.fetchone()
+
+        if employee is None:
+            print("\nEmployee not found.")
+            return
+
+        print("\nCurrent Details")
+        print("-------------------------")
+        print(f"Department ID : {employee[1]}")
+        print(f"First Name : {employee[2]}")
+        print(f"Last Name : {employee[3]}")
+        print(f"Email : {employee[4]}")
+        print(f"Phone : {employee[5]}")
+        print(f"Salary : {employee[6]}")
+
+        print("\nEnter new values")
+        department_id = int(input("Department ID: "))
+        first_name = input("First Name: ")
+        last_name = input("Last Name: ")
+        email = input("Email: ")
+        phone = input("Phone: ")
+        salary = float(input("Salary: "))
+
+        cur.execute(
+            """
+            UPDATE employees
+            SET
+                department_id = %s,
+                first_name = %s,
+                last_name = %s,
+                email = %s,
+                phone = %s,
+                salary = %s
+            WHERE employee_id = %s
+            """,
+            (
+                department_id,
+                first_name,
+                last_name,
+                email,
+                phone,
+                salary,
+                employee_id,
+            ),
+        )
+        conn.commit()
+        print("\nEmployee updated successfully!")
+
+    except Exception as e:
+        conn.rollback()
+        print("\nError:", e)
+
+    finally:
+        if "cur" in locals():
+            cur.close()
+
+        if "conn" in locals():
+            conn.close()

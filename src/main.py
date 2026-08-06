@@ -1,8 +1,12 @@
-from employee import add_employee, view_employees, search_employee
+from employee import (
+    add_employee,
+    view_employees,
+    search_employee,
+    update_employee
+)
 
 def main():
-    view_employees()
-    search_employee()
+    update_employee()
 
 if __name__ == "__main__":
     main()
