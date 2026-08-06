@@ -1,5 +1,35 @@
 from database import get_connection
 
+def display_employee_table(employees):
+    if not employees:
+        print("\nNo employees found.")
+        return
+    
+    print("\n" + "=" * 90)
+    print("Employee List")
+    print("=" * 90)
+    print(
+        f"{'ID':<5}"
+        f"{'Name':<25}"
+        f"{'Department':<20}"
+        f"{'Salary':<12}"
+    )
+    print("-" * 90)
+
+    for employee in employees:
+        full_name = (
+            employee["first_name"]
+            + " "
+            + employee["last_name"]
+        )
+
+        print(
+            f"{employee['employee_id']:<5}"
+            f"{full_name:<25}"
+            f"{employee['department_name']:<20}"
+            f"{employee['salary']:<12}"
+        )
+
 def add_employee():
     try:
         conn = get_connection()
@@ -92,13 +122,7 @@ def view_employees():
             f"{'Salary':<12}"
         )
         print("-" * 65)
-        for emp in employees:
-            print(
-                f"{emp[0]:<5}"
-                f"{emp[1] + ' ' + emp[2]:<25}"
-                f"{emp[3]:<20}"
-                f"{emp[7]:<12}"
-            )
+        display_employee_table(employees)
 
     except Exception as e:
         print("Error:", e)
@@ -114,58 +138,41 @@ def search_employee():
     try:
         conn = get_connection()
         cur = conn.cursor()
-
-        print("\n===== Search Employee =====")
-        keyword = input("Enter name or email: ")
-
-        query = """
-        SELECT
-            e.employee_id,
-            e.first_name,
-            e.last_name,
-            d.department_name,
-            e.email,
-            e.salary
-        FROM employees e
-        JOIN departments d
-            ON e.department_id = d.department_id
-        WHERE
-            e.first_name ILIKE %s
-            OR e.last_name ILIKE %s
-            OR e.email ILIKE %s
-        ORDER BY e.employee_id;
-        """
-
-        search_pattern = f"%{keyword}%"
+        keyword = input(
+            "\nEnter name or email to search: "
+        )
         cur.execute(
-            query,
-            (search_pattern, search_pattern, search_pattern),
+            """
+            SELECT
+                e.employee_id,
+                e.first_name,
+                e.last_name,
+                d.department_name,
+                e.email,
+                e.phone,
+                e.salary
+            FROM employees e
+            JOIN departments d
+            ON e.department_id=d.department_id
+            WHERE
+            e.first_name ILIKE %s
+            OR
+            e.last_name ILIKE %s
+            OR
+            e.email ILIKE %s
+            ORDER BY employee_id
+            """,
+            (
+                f"%{keyword}%",
+                f"%{keyword}%",
+                f"%{keyword}%"
+            )
         )
         employees = cur.fetchall()
-
-        if not employees:
-            print("\nNo matching employees found.")
-            return
-
-        print("\n=============== Search Results ===============\n")
-        print(
-            f"{'ID':<5}"
-            f"{'Name':<25}"
-            f"{'Department':<20}"
-            f"{'Salary':<12}"
-        )
-        print("-" * 65)
-
-        for emp in employees:
-            print(
-                f"{emp[0]:<5}"
-                f"{emp[1] + ' ' + emp[2]:<25}"
-                f"{emp[3]:<20}"
-                f"{emp[5]:<12}"
-            )
+        display_employee_table(employees)
 
     except Exception as e:
-        print("Error:", e)
+        print(e)
 
     finally:
         if "cur" in locals():
