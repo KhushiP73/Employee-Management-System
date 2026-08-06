@@ -8,6 +8,8 @@ from employee import (
 from department import (
     add_department,
     view_departments,
+    update_department,
+    delete_department
 )
 
 def display_menu():
@@ -46,7 +48,9 @@ def display_menu():
                 print("\n===== Department Management =====")
                 print("1. Add Department")
                 print("2. View Departments")
-                print("3. Back")
+                print("3. Update Department")
+                print("4. Delete Department")
+                print("5. Back")
 
                 department_choice = input("Enter your choice: ")
 
@@ -57,6 +61,12 @@ def display_menu():
                     view_departments()
 
                 elif department_choice == "3":
+                    update_department()
+
+                elif department_choice == "4":
+                    delete_department()
+
+                elif department_choice == "5":
                     break
 
                 else:

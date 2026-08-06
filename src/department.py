@@ -89,3 +89,125 @@ def view_departments():
         if "conn" in locals():
             conn.close()
 
+def update_department():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        department_id = int(input("\nEnter Department ID to update: "))
+        cur.execute(
+            """
+            SELECT
+                department_id,
+                department_name,
+                location
+            FROM departments
+            WHERE department_id = %s
+            """,
+            (department_id,),
+        )
+        department = cur.fetchone()
+
+        if department is None:
+            print("\nDepartment not found.")
+            return
+
+        print("\nCurrent Details")
+        print("-------------------------")
+        print(f"Name : {department['department_name']}")
+        print(f"Location : {department['location']}")
+
+        department_name = input("New Department Name: ").strip()
+        location = input("New Location: ").strip()
+
+        cur.execute(
+            """
+            UPDATE departments
+            SET
+                department_name = %s,
+                location = %s
+            WHERE department_id = %s
+            """,
+            (
+                department_name,
+                location,
+                department_id,
+            ),
+        )
+
+        conn.commit()
+        print("\nDepartment updated successfully!")
+
+    except Exception as e:
+        if "conn" in locals():
+            conn.rollback()
+        print("\nError:", e)
+
+    finally:
+        if "cur" in locals():
+            cur.close()
+
+        if "conn" in locals():
+            conn.close()
+
+def delete_department():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        department_id = int(input("\nEnter Department ID to delete: "))
+        cur.execute(
+            """
+            SELECT
+                department_id,
+                department_name
+            FROM departments
+            WHERE department_id = %s
+            """,
+            (department_id,),
+        )
+
+        department = cur.fetchone()
+
+        if department is None:
+            print("\nDepartment not found.")
+            return
+
+        print("\nDepartment Found")
+        print("-------------------------")
+        print(f"ID   : {department['department_id']}")
+        print(f"Name : {department['department_name']}")
+
+        confirm = input("\nDelete this department? (y/n): ").strip().lower()
+        if confirm != "y":
+            print("\nDeletion cancelled.")
+            return
+
+        cur.execute(
+            """
+            DELETE FROM departments
+            WHERE department_id = %s
+            """,
+            (department_id,),
+        )
+
+        conn.commit()
+        print("\nDepartment deleted successfully!")
+
+    except Exception as e:
+        if "conn" in locals():
+            conn.rollback()
+
+        error_message = str(e).lower()
+        if "foreign key" in error_message:
+            print(
+                "\nCannot delete department because employees are assigned to it."
+            )
+            print("Move or delete those employees first.")
+        else:
+            print("\nError:", e)
+
+    finally:
+        if "cur" in locals():
+            cur.close()
+
+        if "conn" in locals():
+            conn.close()
