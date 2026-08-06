@@ -11,6 +11,10 @@ from department import (
     update_department,
     delete_department
 )
+from attendance import (
+    mark_attendance,
+    view_attendance,
+)
 
 def display_menu():
     while True:
@@ -73,7 +77,25 @@ def display_menu():
                     print("\nInvalid choice.")
 
         elif choice == "7":
-            print("\nAttendance")
+            while True:
+                print("\n===== Attendance Management =====")
+                print("1. Mark Attendance")
+                print("2. View Attendance")
+                print("3. Back")
+
+                attendance_choice = input("\nEnter your choice: ")
+
+                if attendance_choice == "1":
+                    mark_attendance()
+
+                elif attendance_choice == "2":
+                    view_attendance()
+
+                elif attendance_choice == "3":
+                    break
+
+                else:
+                    print("\nInvalid choice.")
 
         elif choice == "8":
             print("\nReports")
