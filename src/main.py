@@ -1,13 +1,7 @@
-from employee import (
-    add_employee,
-    view_employees,
-    search_employee,
-    update_employee,
-    delete_employee
-)
+from menu import display_menu
 
 def main():
-    delete_employee()
+    display_menu()
 
 if __name__ == "__main__":
     main()
