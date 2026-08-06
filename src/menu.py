@@ -5,6 +5,10 @@ from employee import (
     update_employee,
     delete_employee,
 )
+from department import (
+    add_department,
+    view_departments,
+)
 
 def display_menu():
     while True:
@@ -38,7 +42,25 @@ def display_menu():
             delete_employee()
 
         elif choice == "6":
-            print("\nDepartment")
+            while True:
+                print("\n===== Department Management =====")
+                print("1. Add Department")
+                print("2. View Departments")
+                print("3. Back")
+
+                department_choice = input("Enter your choice: ")
+
+                if department_choice == "1":
+                    add_department()
+
+                elif department_choice == "2":
+                    view_departments()
+
+                elif department_choice == "3":
+                    break
+
+                else:
+                    print("\nInvalid choice.")
 
         elif choice == "7":
             print("\nAttendance")
