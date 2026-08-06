@@ -109,3 +109,67 @@ def view_employees():
 
         if "conn" in locals():
             conn.close()
+
+def search_employee():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        print("\n===== Search Employee =====")
+        keyword = input("Enter name or email: ")
+
+        query = """
+        SELECT
+            e.employee_id,
+            e.first_name,
+            e.last_name,
+            d.department_name,
+            e.email,
+            e.salary
+        FROM employees e
+        JOIN departments d
+            ON e.department_id = d.department_id
+        WHERE
+            e.first_name ILIKE %s
+            OR e.last_name ILIKE %s
+            OR e.email ILIKE %s
+        ORDER BY e.employee_id;
+        """
+
+        search_pattern = f"%{keyword}%"
+        cur.execute(
+            query,
+            (search_pattern, search_pattern, search_pattern),
+        )
+        employees = cur.fetchall()
+
+        if not employees:
+            print("\nNo matching employees found.")
+            return
+
+        print("\n=============== Search Results ===============\n")
+        print(
+            f"{'ID':<5}"
+            f"{'Name':<25}"
+            f"{'Department':<20}"
+            f"{'Salary':<12}"
+        )
+        print("-" * 65)
+
+        for emp in employees:
+            print(
+                f"{emp[0]:<5}"
+                f"{emp[1] + ' ' + emp[2]:<25}"
+                f"{emp[3]:<20}"
+                f"{emp[5]:<12}"
+            )
+
+    except Exception as e:
+        print("Error:", e)
+
+    finally:
+        if "cur" in locals():
+            cur.close()
+
+        if "conn" in locals():
+            conn.close()
