@@ -1,4 +1,8 @@
 from database import get_connection
+from utils import (
+    get_integer,
+    get_required_text,
+)
 
 def display_departments(departments):
     if not departments:
@@ -28,9 +32,8 @@ def add_department():
         cur = conn.cursor()
 
         print("\n===== Add Department =====")
-
-        department_name = input("Department Name: ").strip()
-        location = input("Location: ").strip()
+        department_name = get_required_text("Department Name: ")
+        location = get_required_text("Location: ")
 
         cur.execute(
             """
@@ -93,7 +96,10 @@ def update_department():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        department_id = int(input("\nEnter Department ID to update: "))
+        department_id = get_integer("\nEnter Department ID to update: ")
+        department_name = get_required_text("New Department Name: ")
+        location = get_required_text("New Location: ")
+
         cur.execute(
             """
             SELECT
@@ -153,7 +159,7 @@ def delete_department():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        department_id = int(input("\nEnter Department ID to delete: "))
+        department_id = get_integer("\nEnter Department ID to delete: ")
         cur.execute(
             """
             SELECT

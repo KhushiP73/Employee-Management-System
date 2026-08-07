@@ -1,4 +1,11 @@
 from database import get_connection
+from utils import (
+    get_integer,
+    get_positive_float,
+    get_required_text,
+    get_email,
+    get_date,
+)
 
 def display_employee_table(employees):
     if not employees:
@@ -36,13 +43,13 @@ def add_employee():
         cur = conn.cursor()
 
         print("\n===== Add Employee =====")
-        department_id = int(input("Department ID: "))
-        first_name = input("First Name: ")
-        last_name = input("Last Name: ")
-        email = input("Email: ")
-        phone = input("Phone: ")
-        hire_date = input("Hire Date (YYYY-MM-DD): ")
-        salary = float(input("Salary: "))
+        department_id = get_integer("Department ID: ")
+        first_name = get_required_text("First Name: ")
+        last_name = get_required_text("Last Name: ")
+        email = get_email("Email: ")
+        phone = input("Phone: ").strip()
+        hire_date = get_date("Hire Date (YYYY-MM-DD): ")
+        salary = get_positive_float("Salary: ")
 
         query = """
         INSERT INTO employees
@@ -138,9 +145,8 @@ def search_employee():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        keyword = input(
-            "\nEnter name or email to search: "
-        )
+
+        keyword = get_required_text("\nEnter name or email to search: ")
         cur.execute(
             """
             SELECT
@@ -186,7 +192,7 @@ def update_employee():
         conn = get_connection()
         cur = conn.cursor()
 
-        employee_id = int(input("\nEnter Employee ID to update: "))
+        employee_id = get_integer("\nEnter Employee ID to update: ")
 
         cur.execute(
             """
@@ -220,12 +226,12 @@ def update_employee():
         print(f"Salary : {employee[6]}")
 
         print("\nEnter new values")
-        department_id = int(input("Department ID: "))
-        first_name = input("First Name: ")
-        last_name = input("Last Name: ")
-        email = input("Email: ")
-        phone = input("Phone: ")
-        salary = float(input("Salary: "))
+        department_id = get_integer("Department ID: ")
+        first_name = get_required_text("First Name: ")
+        last_name = get_required_text("Last Name: ")
+        email = get_email("Email: ")
+        phone = input("Phone: ").strip()
+        salary = get_positive_float("Salary: ")
 
         cur.execute(
             """
@@ -268,7 +274,7 @@ def delete_employee():
         conn = get_connection()
         cur = conn.cursor()
 
-        employee_id = int(input("\nEnter Employee ID to delete: "))
+        employee_id = get_integer("\nEnter Employee ID to delete: ")
 
         # Check if employee exists
         cur.execute(

@@ -1,4 +1,9 @@
 from database import get_connection
+from utils import (
+    get_integer,
+    get_date,
+    get_attendance_status,
+)
 
 def display_attendance(records):
     if not records:
@@ -36,11 +41,10 @@ def mark_attendance():
         cur = conn.cursor()
 
         print("\n===== Mark Attendance =====")
-        employee_id = int(input("Employee ID: "))
-        attendance_date = input("Date (YYYY-MM-DD): ")
-        status = input(
-            "Status (Present/Absent/Leave): "
-        ).capitalize()
+
+        employee_id = get_integer("Employee ID: ")
+        attendance_date = get_date("Date (YYYY-MM-DD): ")
+        status = get_attendance_status()
 
         if status not in ["Present", "Absent", "Leave"]:
             print("\nInvalid attendance status.")
