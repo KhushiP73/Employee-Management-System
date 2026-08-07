@@ -15,6 +15,12 @@ from attendance import (
     mark_attendance,
     view_attendance,
 )
+from reports import (
+    employee_count_by_department,
+    average_salary_by_department,
+    highest_paid_employee,
+    lowest_paid_employee,
+)
 
 def display_menu():
     while True:
@@ -98,7 +104,33 @@ def display_menu():
                     print("\nInvalid choice.")
 
         elif choice == "8":
-            print("\nReports")
+            while True:
+                print("\n===== Reports =====")
+                print("1. Employee Count by Department")
+                print("2. Average Salary by Department")
+                print("3. Highest Paid Employee")
+                print("4. Lowest Paid Employee")
+                print("5. Back")
+
+                report_choice = input("\nEnter your choice: ")
+
+                if report_choice == "1":
+                    employee_count_by_department()
+
+                elif report_choice == "2":
+                    average_salary_by_department()
+
+                elif report_choice == "3":
+                    highest_paid_employee()
+
+                elif report_choice == "4":
+                    lowest_paid_employee()
+
+                elif report_choice == "5":
+                    break
+
+                else:
+                    print("\nInvalid choice.")
 
         elif choice == "9":
             print("\nThank you for using the Employee Management System.")
