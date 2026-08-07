@@ -20,6 +20,11 @@ from reports import (
     average_salary_by_department,
     highest_paid_employee,
     lowest_paid_employee,
+    attendance_summary_by_employee,
+    attendance_summary_by_status,
+    department_salary_statistics,
+    employees_with_perfect_attendance,
+    employees_with_low_attendance,
 )
 
 def display_menu():
@@ -110,7 +115,12 @@ def display_menu():
                 print("2. Average Salary by Department")
                 print("3. Highest Paid Employee")
                 print("4. Lowest Paid Employee")
-                print("5. Back")
+                print("5. Attendance Summary by Employee")
+                print("6. Attendance Summary by Status")
+                print("7. Department Salary Statistics")
+                print("8. Employees With Perfect Attendance")
+                print("9. Employees With Low Attendance")
+                print("10. Back")
 
                 report_choice = input("\nEnter your choice: ")
 
@@ -127,6 +137,21 @@ def display_menu():
                     lowest_paid_employee()
 
                 elif report_choice == "5":
+                    attendance_summary_by_employee()
+
+                elif report_choice == "6":
+                    attendance_summary_by_status()
+
+                elif report_choice == "7":
+                    department_salary_statistics()
+
+                elif report_choice == "8":
+                    employees_with_perfect_attendance()
+
+                elif report_choice == "9":
+                    employees_with_low_attendance()
+
+                elif report_choice == "10":
                     break
 
                 else:
