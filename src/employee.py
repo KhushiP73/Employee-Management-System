@@ -1,4 +1,5 @@
 from database import get_connection
+from psycopg import errors
 from utils import (
     get_integer,
     get_positive_float,
@@ -83,8 +84,25 @@ def add_employee():
 
         print("\nEmployee added successfully!")
 
-    except Exception as e:
-        print("\nError:", e)
+    except errors.UniqueViolation:
+        conn.rollback()
+        print("\nAn employee with this email already exists.")
+
+    except errors.ForeignKeyViolation:
+        conn.rollback()
+        print("\nThe selected department does not exist.")
+
+    except errors.CheckViolation:
+        conn.rollback()
+        print( "\nOne of the provided values violates a database rule.")
+
+    except errors.NotNullViolation:
+        conn.rollback()
+        print("\nA required field cannot be empty.")
+
+    except errors.DatabaseError as e:
+        conn.rollback()
+        print("\nDatabase error:", e)
 
     finally:
         if "cur" in locals():

@@ -1,4 +1,5 @@
 from database import get_connection
+from psycopg import errors
 from utils import (
     get_integer,
     get_required_text,
@@ -53,10 +54,17 @@ def add_department():
         conn.commit()
         print("\nDepartment added successfully!")
 
-    except Exception as e:
-        if "conn" in locals():
-            conn.rollback()
-        print("\nError:", e)
+    except errors.UniqueViolation:
+        conn.rollback()
+        print("\nA department with this name already exists.")
+
+    except errors.NotNullViolation:
+        conn.rollback()
+        print("\nDepartment name and location are required.")
+
+    except errors.DatabaseError as e:
+        conn.rollback()
+        print("\nDatabase error:", e)
 
     finally:
         if "cur" in locals():
@@ -198,18 +206,13 @@ def delete_department():
         conn.commit()
         print("\nDepartment deleted successfully!")
 
-    except Exception as e:
-        if "conn" in locals():
-            conn.rollback()
+    except errors.ForeignKeyViolation:
+        conn.rollback()
+        print("\nCannot delete this department. Employees are still assigned to this department.")
 
-        error_message = str(e).lower()
-        if "foreign key" in error_message:
-            print(
-                "\nCannot delete department because employees are assigned to it."
-            )
-            print("Move or delete those employees first.")
-        else:
-            print("\nError:", e)
+    except errors.DatabaseError as e:
+        conn.rollback()
+        print("\nDatabase error:", e)
 
     finally:
         if "cur" in locals():

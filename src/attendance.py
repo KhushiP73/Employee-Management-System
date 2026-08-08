@@ -1,4 +1,5 @@
 from database import get_connection
+from psycopg import errors
 from utils import (
     get_integer,
     get_date,
@@ -70,21 +71,21 @@ def mark_attendance():
         conn.commit()
         print("\nAttendance marked successfully!")
 
-    except Exception as e:
-        if "conn" in locals():
-            conn.rollback()
-        message = str(e).lower()
+    except errors.UniqueViolation:
+        conn.rollback()
+        print("\nAttendance already exists for this employee on this date.")
 
-        if "unique" in message:
-            print(
-                "\nAttendance already exists for this employee on this date."
-            )
+    except errors.ForeignKeyViolation:
+        conn.rollback()
+        print("\nThe specified employee does not exist.")
 
-        elif "foreign key" in message:
-            print("\nEmployee ID does not exist.")
+    except errors.CheckViolation:
+        conn.rollback()
+        print("\nInvalid attendance status.")
 
-        else:
-            print("\nError:", e)
+    except errors.DatabaseError as e:
+        conn.rollback()
+        print("\nDatabase error:", e)
 
     finally:
         if "cur" in locals():
